@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace UtilityHolder.Dto
 {
     [AutoConstructor]
-    public class RoleDto
+    public partial class RoleDto
     {
         public string RoleName { get; }
 

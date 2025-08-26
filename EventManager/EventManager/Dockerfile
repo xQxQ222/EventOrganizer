@@ -5,15 +5,12 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Копируем проекты
 COPY EventManager/EventManager.csproj EventManager/
 COPY ModelHolder/ModelHolder.csproj ModelHolder/
 COPY UtilityHolder/UtilityHolder.csproj UtilityHolder/
 
-# Восстанавливаем зависимости
 RUN dotnet restore EventManager/EventManager.csproj
 
-# Копируем исходники
 COPY . .
 
 WORKDIR /src/EventManager

@@ -5,8 +5,6 @@ namespace ModelHolder.Models;
 
 public partial class User
 {
-    public long Id { get; set; }
-
     public long TelegramId { get; set; }
 
     public string? Email { get; set; }

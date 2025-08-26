@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 namespace UtilityHolder.Dto
 {
     [AutoConstructor]
-    public partial class LocationDto
+    public partial class ImageDto
     {
-        public decimal Latitude { get; }
+        public long EventId { get; }
 
-        public decimal Longitude { get; }
-
-        public string? Description { get; }
+        public string Path { get; }
     }
 }

@@ -23,7 +23,7 @@ services:
       - db
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
-      ConnectionStrings__MyDb: "Host=db;Database=event-manager-db;Username=postgres;Password=${POSTGRES_PASSWORD}"
+      DB_CONNECTION: ${DBCONNECTION}
     ports:
       - "5000:8080"
 
@@ -31,12 +31,31 @@ services:
     build:
       context: .
       dockerfile: TelegramUI/Dockerfile
+    environment:
+        - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
     container_name: telegram-ui
     restart: always
     depends_on:
       - api
     ports:
       - "3000:80"
+  kafka:
+    image: confluentinc/confluent-local:7.4.3
+    hostname: kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      CLUSTER_ID: 'K0EA9p0yEe6MkAAAAkKsEg'
 
 volumes:
   db-data:

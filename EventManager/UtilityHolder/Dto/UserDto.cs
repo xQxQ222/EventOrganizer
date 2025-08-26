@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace UtilityHolder.Dto
 {
     [AutoConstructor]
-    public class UserDto
+    public partial class UserDto
     {
         public long TelegramId { get; }
 

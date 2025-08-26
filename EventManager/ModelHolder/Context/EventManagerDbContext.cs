@@ -5,13 +5,13 @@ using ModelHolder.Models;
 
 namespace ModelHolder.Context;
 
-public partial class EventManagerContext : DbContext
+public partial class EventManagerDbContext : DbContext
 {
-    public EventManagerContext()
+    public EventManagerDbContext()
     {
     }
 
-    public EventManagerContext(DbContextOptions<EventManagerContext> options)
+    public EventManagerDbContext(DbContextOptions<EventManagerDbContext> options)
         : base(options)
     {
     }
@@ -33,7 +33,9 @@ public partial class EventManagerContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=EventManager;Username=postgres;Password=19Ivan192004");
+    {
+
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -219,24 +221,21 @@ public partial class EventManagerContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("users_pkey");
+            entity.HasKey(e => e.TelegramId).HasName("users_pkey");
 
             entity.ToTable("users");
 
             entity.HasIndex(e => e.Email, "users_email_key").IsUnique();
 
-            entity.HasIndex(e => e.TelegramId, "users_telegram_id_key").IsUnique();
-
-            entity.Property(e => e.Id)
-                .UseIdentityAlwaysColumn()
-                .HasColumnName("id");
+            entity.Property(e => e.TelegramId)
+                .ValueGeneratedNever()
+                .HasColumnName("telegram_id");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");
             entity.Property(e => e.RoleId)
                 .HasDefaultValue((short)1)
                 .HasColumnName("role_id");
-            entity.Property(e => e.TelegramId).HasColumnName("telegram_id");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
