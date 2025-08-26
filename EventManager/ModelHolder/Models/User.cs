@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ModelHolder.Models
+namespace ModelHolder.Models;
+
+public partial class User
 {
-    public class User
-    {
-        public int Id { get; set; }
-        public string TelegramId { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        HashSet<UserRequest> Requests { get; set; }
-        HashSet<Ticket> Tickets { get; set; }
-        public Role UserRole { get; set; }
-    }
+    public long Id { get; set; }
+
+    public long TelegramId { get; set; }
+
+    public string? Email { get; set; }
+
+    public short RoleId { get; set; }
+
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+
+    public virtual Role Role { get; set; } = null!;
 }

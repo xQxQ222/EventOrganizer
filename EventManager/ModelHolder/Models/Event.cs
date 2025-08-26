@@ -1,40 +1,41 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
 
-namespace ModelHolder.Models
+namespace ModelHolder.Models;
+
+public partial class Event
 {
-    /// <summary>
-    /// Описание события
-    /// </summary>
-    public class Event
-    {
-        public int Id { get; set; }
-        [Required, NotNull]
-        public string Name { get; set; }
-        [AllowNull]
-        public string Description { get; set; }
+    public long Id { get; set; }
 
-        [Required, NotNull]
-        public User Initiator { get; set; }
+    public string Title { get; set; } = null!;
 
-        [Required, NotNull]
-        public EventCategory Category { get; set; }
+    public string? Description { get; set; }
 
-        [Required, NotNull]
-        public Location Location { get; set; }
+    public long LocationId { get; set; }
 
-        [DefaultValue(false)]
-        public bool IsTicketed { get; set; }
+    public DateTime CreatedOn { get; set; }
 
-        [DefaultValue(10)]
-        public int ParticipantLimit { get; set; }
+    public DateTime EventDate { get; set; }
 
-        public DateTime CreatedOn { get; set; }
-        public DateTime EventDate { get; set; }
+    public bool? IsPaid { get; set; }
 
-        [DefaultValue(false)]
-        public bool IsPaid {  get; set; }
-    }
+    public int ParticipantLimit { get; set; }
+
+    public long CategoryId { get; set; }
+
+    public short State { get; set; }
+
+    public long InitiatorId { get; set; }
+
+    public virtual Category Category { get; set; } = null!;
+
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+    public virtual ICollection<Image> Images { get; set; } = new List<Image>();
+
+    public virtual User Initiator { get; set; } = null!;
+
+    public virtual Location Location { get; set; } = null!;
+
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 }

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ModelHolder.Models
+namespace ModelHolder.Models;
+
+public partial class Role
 {
-    public class Role
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-    }
+    public short RoleId { get; set; }
+
+    public string RoleName { get; set; } = null!;
+
+    public string? Description { get; set; }
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

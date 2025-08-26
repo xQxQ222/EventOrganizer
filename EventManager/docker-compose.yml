@@ -1,0 +1,42 @@
+services:
+  db:
+      image: postgres:16
+      container_name: eventmanagerdb
+      restart: always
+      environment:
+        POSTGRES_DB: event-manager-db
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ports:
+        - "6432:5432"
+      volumes:
+        - db-data:/var/lib/postgresql/data
+        - ./EventManager/init-sql:/docker-entrypoint-initdb.d
+
+  api:
+    build:
+      context: .
+      dockerfile: EventManager/Dockerfile
+    container_name: event-manager-api
+    restart: always
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__MyDb: "Host=db;Database=event-manager-db;Username=postgres;Password=${POSTGRES_PASSWORD}"
+    ports:
+      - "5000:8080"
+
+  telegram-ui:
+    build:
+      context: .
+      dockerfile: TelegramUI/Dockerfile
+    container_name: telegram-ui
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+
+volumes:
+  db-data:

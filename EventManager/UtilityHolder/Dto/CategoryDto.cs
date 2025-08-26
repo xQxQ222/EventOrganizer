@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TelegramUI.Configuration
+namespace UtilityHolder.Dto
 {
-    public class SettingsStorage
+    [AutoConstructor]
+    public partial class CategoryDto
     {
-        public string BotTocken { get; set; } = string.Empty;
+        public string CategoryName { get; }
     }
 }
