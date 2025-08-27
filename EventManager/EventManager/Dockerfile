@@ -7,7 +7,6 @@ WORKDIR /src
 
 COPY EventManager/EventManager.csproj EventManager/
 COPY ModelHolder/ModelHolder.csproj ModelHolder/
-COPY UtilityHolder/UtilityHolder.csproj UtilityHolder/
 
 RUN dotnet restore EventManager/EventManager.csproj
 

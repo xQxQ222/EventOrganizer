@@ -6,8 +6,8 @@ namespace EventManager.Service.Images
 {
     public interface IAdminImageService
     {
-        Task<List<Image>> PostImages(long eventId, List<string> imagesPath);
+        Task<List<Image>> PostImages(long userId, long eventId, List<string> imagesPath);
 
-        Task DeleteImages(List<long> imagesId);
+        Task DeleteImages(long userId, List<long> imagesId);
     }
 }

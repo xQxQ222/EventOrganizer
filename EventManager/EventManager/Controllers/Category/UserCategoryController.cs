@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using ModelHolder.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UtilityHolder.Dto;
 
 namespace EventManager.Controllers.CategoryService
 {
@@ -24,17 +23,17 @@ namespace EventManager.Controllers.CategoryService
         }
 
         [HttpGet("{id:long}")]
-        public async Task<Category> GetCategoryById(long id)
+        public async Task<Category> GetCategoryById([FromHeader(Name = "X-User-Id")] long userId, long id)
         {
             log.LogInformation("GET /api/categories/{}", id);
-            return await userCategoryService.GetCategoryById(id);
+            return await userCategoryService.GetCategoryById(userId, id);
         }
 
         [HttpGet]
-        public async Task<List<Category>> GetAllCategories()
+        public async Task<List<Category>> GetAllCategories([FromHeader(Name = "X-User-Id")] long userId)
         {
             log.LogInformation("GET /api/categories");
-            return await userCategoryService.GetAllCategories();
+            return await userCategoryService.GetAllCategories(userId);
         }
     }
 }

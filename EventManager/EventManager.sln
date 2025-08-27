@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityHolder", "UtilityHolder\UtilityHolder.csproj", "{91F7E79B-EB2A-4FCB-A6F7-C80DA3DF2D87}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramUI", "TelegramUI\TelegramUI.csproj", "{C2E1A80A-15FD-4514-BFAB-73F1159A473D}"
 EndProject
 Global
@@ -30,10 +28,6 @@ Global
 		{29C46C6B-82D7-4ED0-B503-45F602C8F23B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29C46C6B-82D7-4ED0-B503-45F602C8F23B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29C46C6B-82D7-4ED0-B503-45F602C8F23B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91F7E79B-EB2A-4FCB-A6F7-C80DA3DF2D87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91F7E79B-EB2A-4FCB-A6F7-C80DA3DF2D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91F7E79B-EB2A-4FCB-A6F7-C80DA3DF2D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91F7E79B-EB2A-4FCB-A6F7-C80DA3DF2D87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C2E1A80A-15FD-4514-BFAB-73F1159A473D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C2E1A80A-15FD-4514-BFAB-73F1159A473D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2E1A80A-15FD-4514-BFAB-73F1159A473D}.Release|Any CPU.ActiveCfg = Release|Any CPU

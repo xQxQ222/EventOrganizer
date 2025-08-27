@@ -9,11 +9,7 @@ namespace ModelHolder.Dto
     [AutoConstructor]
     public partial class CommentDto
     {
-        public long AuthorId { get; }
-
         public long EventId { get; }
-
-        public DateTime Created { get; }
 
         public bool IsPositive { get; }
 

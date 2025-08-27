@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using EventManager.Exceptions;
+﻿using EventManager.Utility;
 using ModelHolder.Context;
+using ModelHolder.Exceptions;
 using ModelHolder.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UtilityHolder.Dto;
 
 namespace EventManager.Service.CategoryService
 {
@@ -13,20 +12,24 @@ namespace EventManager.Service.CategoryService
     {
 
         private readonly EventManagerDbContext dbContext;
+        private readonly HelperMethods helperMethods;
 
-        public UserCategoryService(EventManagerDbContext dbContext)
+        public UserCategoryService(EventManagerDbContext dbContext, HelperMethods helperMethods)
         {
             this.dbContext = dbContext;
+            this.helperMethods = helperMethods;
         }
 
-        public async Task<List<Category>> GetAllCategories()
+        public async Task<List<Category>> GetAllCategories(long userId)
         {
+            helperMethods.VerifyUserExistence(userId);
             var categories = dbContext.Categories.ToList();
             return categories;
         }
 
-        public async Task<Category> GetCategoryById(long id)
+        public async Task<Category> GetCategoryById(long userId, long id)
         {
+            helperMethods.VerifyUserExistence(userId);
             var category = dbContext.Categories.FirstOrDefault(x=>x.CategoryId == id);
 
             if (category == null)

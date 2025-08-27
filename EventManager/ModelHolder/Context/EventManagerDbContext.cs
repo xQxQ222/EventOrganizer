@@ -105,7 +105,6 @@ public partial class EventManagerDbContext : DbContext
             entity.Property(e => e.ParticipantLimit)
                 .HasDefaultValue(10)
                 .HasColumnName("participant_limit");
-            entity.Property(e => e.State).HasColumnName("state");
             entity.Property(e => e.Title)
                 .HasMaxLength(150)
                 .HasColumnName("title");

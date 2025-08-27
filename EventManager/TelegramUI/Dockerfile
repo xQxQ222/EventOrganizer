@@ -6,7 +6,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 COPY TelegramUI/TelegramUI.csproj TelegramUI/
-COPY UtilityHolder/UtilityHolder.csproj UtilityHolder/
+COPY ModelHolder/ModelHolder.csproj ModelHolder/
 
 RUN dotnet restore TelegramUI/TelegramUI.csproj
 

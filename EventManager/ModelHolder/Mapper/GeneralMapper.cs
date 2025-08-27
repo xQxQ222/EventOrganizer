@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ModelHolder.Dto;
 using ModelHolder.Models;
-using UtilityHolder.Dto;
 
 namespace EventManager.Mapper
 {
@@ -13,8 +12,6 @@ namespace EventManager.Mapper
             CreateMap<UserDto, User>();
             CreateMap<Category, CategoryDto>();
             CreateMap<CategoryDto, Category>();
-            CreateMap<Location, LocationDto>();
-            CreateMap<LocationDto, Location>();
             CreateMap<Image, ImageDto>();
             CreateMap<ImageDto, Image>();
             CreateMap<Comment, CommentDto>();

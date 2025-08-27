@@ -1,6 +1,8 @@
 using EventManager.Mapper;
 using EventManager.Service.CategoryService;
+using EventManager.Service.Images;
 using EventManager.Service.UserService;
+using EventManager.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,10 +29,16 @@ builder.Host.UseSerilog();
 
 builder.Services.AddAutoMapper(typeof(GeneralMapper));
 
+builder.Services.AddScoped<HelperMethods>();
+
 builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
 builder.Services.AddScoped<IUserCategoryService, UserCategoryService>();
 
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAdminUserService, AdminUserService>();
+builder.Services.AddScoped<IPrivateUserService, PrivateUserService>();
+
+builder.Services.AddScoped<IAdminImageService, AdminImagesService>();
+builder.Services.AddScoped<IUserImagesService, UserImagesService>();
 
 var app = builder.Build();
 

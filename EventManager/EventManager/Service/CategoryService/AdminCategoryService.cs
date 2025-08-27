@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using EventManager.Exceptions;
+using EventManager.Utility;
 using ModelHolder.Context;
 using ModelHolder.Dto;
+using ModelHolder.Exceptions;
 using ModelHolder.Models;
 using System.Threading.Tasks;
-using UtilityHolder.Dto;
 
 namespace EventManager.Service.CategoryService
 {
@@ -12,22 +12,28 @@ namespace EventManager.Service.CategoryService
     {
         private readonly EventManagerDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly HelperMethods helperMethods;
 
-        public AdminCategoryService(EventManagerDbContext dbContext, IMapper mapper)
+        public AdminCategoryService(EventManagerDbContext dbContext, IMapper mapper, HelperMethods helperMethods)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.helperMethods = helperMethods;
         }
-        public async Task<Category> CreateCategory(CategoryDto categoryDto)
+        public async Task<Category> CreateCategory(long userId, CategoryDto categoryDto)
         {
+            helperMethods.VerifyUserExistence(userId);
+            helperMethods.CheckAdminRights(userId);
             var category = mapper.Map<Category>(categoryDto);
             dbContext.Categories.Add(category);
             await dbContext.SaveChangesAsync();
             return category;
         }
 
-        public async Task DeleteCategory(long categoryId)
+        public async Task DeleteCategory(long userId, long categoryId)
         {
+            helperMethods.VerifyUserExistence(userId);
+            helperMethods.CheckAdminRights(userId);
             var category = await dbContext.Categories.FindAsync(categoryId);
             if (category == null)
             {
@@ -37,8 +43,10 @@ namespace EventManager.Service.CategoryService
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<Category> UpdateCategory(long categoryId, CategoryDto categoryDto)
+        public async Task<Category> UpdateCategory(long userId, long categoryId, CategoryDto categoryDto)
         {
+            helperMethods.VerifyUserExistence(userId);
+            helperMethods.CheckAdminRights(userId);
             var category = await dbContext.Categories.FindAsync(categoryId);
             if (category == null)
             {

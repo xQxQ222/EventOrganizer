@@ -1,10 +1,10 @@
 ﻿using EventManager.Service.UserService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ModelHolder.Dto;
 using ModelHolder.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UtilityHolder.Dto;
 
 namespace EventManager.Controllers.Users
 {
@@ -13,40 +13,26 @@ namespace EventManager.Controllers.Users
     public class AdminUsersController : Controller
     {
         private readonly ILogger<AdminUsersController> log;
-        private readonly IUserService userService;
+        private readonly IAdminUserService userService;
 
-        public AdminUsersController(ILogger<AdminUsersController> log, IUserService userService)
+        public AdminUsersController(ILogger<AdminUsersController> log, IAdminUserService userService)
         {
             this.log = log;
             this.userService = userService;
         }
 
-        [HttpGet("{userId:long}")]
-        public async Task<User> GetUserById(long userId)
+        [HttpGet("{userToFindId:long}")]
+        public async Task<User> GetUserById([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long userToFindId)
         {
             log.LogInformation("GET /api/admin/users/{}", userId);
-            return await userService.GetUserById(userId);
+            return await userService.GetUserById(userId, userToFindId);
         }
 
         [HttpGet]
-        public async Task<List<User>> GetAllUsers()
+        public async Task<List<User>> GetAllUsers([FromHeader(Name = "X-User-Id")] long userId)
         {
             log.LogInformation("GET /api/admin/users");
-            return await userService.GetUsers();
-        }
-
-        [HttpPost]
-        public async Task<User> RegisterNewUser(long userId, UserDto userDto)
-        {
-            log.LogInformation("POST /api/admin/users, userId: {} с телом: {}", userId, userDto);
-            return await userService.RegisterUser(userId, userDto);
-        }
-
-        [HttpPatch]
-        public async Task<User> UpdateUser(long userId, UserDto userDto)
-        {
-            log.LogInformation("PATCH /api/admin/users, userId: {} с телом: {}", userId, userDto);
-            return await userService.UpdateUser(userId, userDto);
+            return await userService.GetUsers(userId);
         }
     }
 }

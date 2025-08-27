@@ -22,11 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ModelHolder\ModelHolder.csproj" />
-    <ProjectReference Include="..\UtilityHolder\UtilityHolder.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Service\EventService\" />
   </ItemGroup>
 
 </Project>

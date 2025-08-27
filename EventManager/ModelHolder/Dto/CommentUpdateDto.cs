@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace ModelHolder.Dto
 {
     [AutoConstructor]
-    public partial class LocationDto
+    public partial class CommentUpdateDto
     {
-        public decimal Latitude { get; }
+        public bool IsPositive { get; }
 
-        public decimal Longitude { get; }
+        public string Title { get; }
 
-        public string? Description { get; }
+        public string Description { get; }
     }
 }

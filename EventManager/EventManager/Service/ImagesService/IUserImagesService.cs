@@ -6,6 +6,6 @@ namespace EventManager.Service.Images
 {
     public interface IUserImagesService
     {
-        Task<List<Image>> GetEventImages(long eventId);
+        Task<List<Image>> GetEventImages(long userId, long eventId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using ModelHolder.Context;
+﻿using EventManager.Utility;
+using ModelHolder.Context;
 using ModelHolder.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,17 @@ namespace EventManager.Service.Images
     {
 
         private readonly EventManagerDbContext dbContext;
+        private readonly HelperMethods helperMethods;
 
-        public UserImagesService(EventManagerDbContext dbContext)
+        public UserImagesService(EventManagerDbContext dbContext, HelperMethods helperMethods)
         {
             this.dbContext = dbContext;
+            this.helperMethods = helperMethods;
         }
 
-        public async Task<List<Image>> GetEventImages(long eventId)
+        public async Task<List<Image>> GetEventImages(long userId, long eventId)
         {
+            helperMethods.VerifyUserExistence(userId);
             return dbContext.Images.Where(x=>x.EventId == eventId).ToList();
         }
     }

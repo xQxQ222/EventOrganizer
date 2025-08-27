@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ModelHolder\ModelHolder.csproj" />
-    <ProjectReference Include="..\UtilityHolder\UtilityHolder.csproj" />
   </ItemGroup>
 
 </Project>

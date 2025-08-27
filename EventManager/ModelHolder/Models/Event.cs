@@ -23,8 +23,6 @@ public partial class Event
 
     public long CategoryId { get; set; }
 
-    public short State { get; set; }
-
     public long InitiatorId { get; set; }
 
     public virtual Category Category { get; set; } = null!;

@@ -4,15 +4,13 @@ using System;
 namespace ModelHolder.Dto
 {
     [AutoConstructor]
-    public partial class EventDto
+    public partial class EventUpdateDto
     {
         public string Title { get; }
 
         public string? Description { get; }
 
         public Location Location { get; }
-
-        public DateTime EventDate { get; }
 
         public bool? IsPaid { get; }
 

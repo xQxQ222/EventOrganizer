@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EventManager.Exceptions
+namespace ModelHolder.Exceptions
 {
     public class NotFoundException : Exception
     {

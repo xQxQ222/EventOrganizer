@@ -1,45 +1,41 @@
 ﻿using AutoMapper;
-using EventManager.Exceptions;
+using EventManager.Utility;
 using Microsoft.EntityFrameworkCore;
 using ModelHolder.Context;
+using ModelHolder.Dto;
+using ModelHolder.Exceptions;
 using ModelHolder.Models;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UtilityHolder.Dto;
 
 namespace EventManager.Service.UserService
 {
-    public class UserService : IUserService
+    public class PrivateUserService : IPrivateUserService
     {
 
         private readonly EventManagerDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly HelperMethods helperMethods;
 
-        public UserService(EventManagerDbContext dbContext, IMapper mapper)
+        public PrivateUserService(EventManagerDbContext dbContext, IMapper mapper, HelperMethods helperMethods)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.helperMethods = helperMethods;
         }
 
-        public async Task<User> GetUserById(long userId)
+        public async Task<User> GetProfile(long userId)
         {
-            var user = dbContext.Users.FirstOrDefault(x=>x.TelegramId == userId);
-            if (user == null)
-            {
-                throw new NotFoundException($"Пользователь с id {userId} не найден");
-            }
+            helperMethods.VerifyUserExistence(userId);
+            var user = await dbContext.Users.FirstOrDefaultAsync(x=>x.TelegramId == userId);
+            helperMethods.VerifyUserExistence(userId);
             return user;
-        }
-
-        public async Task<List<User>> GetUsers()
-        {
-            return dbContext.Users.ToList();
         }
 
         public async Task<User> RegisterUser(long userId, UserDto userDto)
         {
-            if(dbContext.Users.FirstOrDefault(x=>x.TelegramId == userId)  != null)
+            helperMethods.VerifyUserExistence(userId);
+            if (dbContext.Users.FirstOrDefault(x => x.TelegramId == userId) != null)
             {
                 throw new AlreadyRegisteredException($"Пользователь с id {userId} уже зарегистрирован");
             }
@@ -56,11 +52,8 @@ namespace EventManager.Service.UserService
 
         public async Task<User> UpdateUser(long userId, UserDto userDto)
         {
-            var user = await dbContext.Users.FindAsync(userId);
-            if (user == null)
-            {
-                throw new NotFoundException($"Пользователь с id {userId} не найден");
-            }
+            helperMethods.VerifyUserExistence(userId);
+            var user = dbContext.Users.FirstOrDefault(x=>x.TelegramId == userId);
             if (userDto.Email != null)
             {
                 user.Email = userDto.Email;
@@ -68,5 +61,7 @@ namespace EventManager.Service.UserService
             await dbContext.SaveChangesAsync();
             return user;
         }
+
+
     }
 }
