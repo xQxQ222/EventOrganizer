@@ -32,13 +32,14 @@ services:
       context: .
       dockerfile: TelegramUI/Dockerfile
     environment:
-        - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+        - StorageTgBotSets__TELEGRAM_TOKEN=${StorageTgBotSets__TELEGRAM_TOKEN}
     container_name: telegram-ui
     restart: always
     depends_on:
       - api
     ports:
       - "3000:80"
+
   kafka:
     image: confluentinc/confluent-local:7.4.3
     hostname: kafka

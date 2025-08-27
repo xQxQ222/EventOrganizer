@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ModelHolder.Dto;
 using ModelHolder.Models;
 using UtilityHolder.Dto;
 
@@ -20,7 +21,7 @@ namespace EventManager.Controllers.Events
         public Event UpdateEvent(long id, EventDto eventToUpdate)
         {
             logger.LogInformation("Пришел PATCH запрос /api/admin/events с телом: {}", eventToUpdate);
-
+            return null;
         }
     }
 }

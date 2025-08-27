@@ -1,5 +1,0 @@
-record User{
-	int id;
-	string name;
-	string email;
-}

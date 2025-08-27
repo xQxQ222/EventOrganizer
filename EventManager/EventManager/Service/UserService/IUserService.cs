@@ -1,19 +1,18 @@
 ﻿using ModelHolder.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UtilityHolder.Dto;
 
 namespace EventManager.Service.UserService
 {
     public interface IUserService
     {
-        void RegisterUser(UserDto userDto);
+        Task<User> RegisterUser(long userId, UserDto userDto);
 
-        User UpdateUser(long userId, UserDto userDto);
+        Task<User> UpdateUser(long userId, UserDto userDto);
 
-        User GetUser(long userId);
+        Task<User> GetUserById(long userId);
 
-        User GetUserByEmail(string email);
-
-        List<User> GetUsers();
+        Task<List<User>> GetUsers();
     }
 }

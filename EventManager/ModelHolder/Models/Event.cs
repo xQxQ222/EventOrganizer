@@ -11,7 +11,7 @@ public partial class Event
 
     public string? Description { get; set; }
 
-    public long LocationId { get; set; }
+    public Location Location { get; set; }
 
     public DateTime CreatedOn { get; set; }
 
@@ -34,8 +34,6 @@ public partial class Event
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 
     public virtual User Initiator { get; set; } = null!;
-
-    public virtual Location Location { get; set; } = null!;
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 }

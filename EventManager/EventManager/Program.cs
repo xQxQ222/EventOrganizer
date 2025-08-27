@@ -1,3 +1,6 @@
+using EventManager.Mapper;
+using EventManager.Service.CategoryService;
+using EventManager.Service.UserService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +24,13 @@ var log = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+builder.Services.AddAutoMapper(typeof(GeneralMapper));
+
+builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
+builder.Services.AddScoped<IUserCategoryService, UserCategoryService>();
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

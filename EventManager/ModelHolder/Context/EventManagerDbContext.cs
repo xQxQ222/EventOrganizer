@@ -17,24 +17,16 @@ public partial class EventManagerDbContext : DbContext
     }
 
     public virtual DbSet<Category> Categories { get; set; }
-
     public virtual DbSet<Comment> Comments { get; set; }
-
     public virtual DbSet<Event> Events { get; set; }
-
     public virtual DbSet<Image> Images { get; set; }
-
-    public virtual DbSet<Location> Locations { get; set; }
-
     public virtual DbSet<Request> Requests { get; set; }
-
     public virtual DbSet<Role> Roles { get; set; }
-
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-
+        optionsBuilder.UseNpgsql("Host=localhost;Port=6432;Database=event-manager-db;Username=postgres;Password=postgres");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,11 +50,8 @@ public partial class EventManagerDbContext : DbContext
         modelBuilder.Entity<Comment>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("comments_pkey");
-
             entity.ToTable("comments");
-
             entity.HasIndex(e => new { e.AuthorId, e.EventId }, "uq_comment").IsUnique();
-
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
@@ -113,7 +102,6 @@ public partial class EventManagerDbContext : DbContext
             entity.Property(e => e.IsPaid)
                 .HasDefaultValue(false)
                 .HasColumnName("is_paid");
-            entity.Property(e => e.LocationId).HasColumnName("location_id");
             entity.Property(e => e.ParticipantLimit)
                 .HasDefaultValue(10)
                 .HasColumnName("participant_limit");
@@ -130,17 +118,22 @@ public partial class EventManagerDbContext : DbContext
                 .HasForeignKey(d => d.InitiatorId)
                 .HasConstraintName("events_initiator_id_fkey");
 
-            entity.HasOne(d => d.Location).WithMany(p => p.Events)
-                .HasForeignKey(d => d.LocationId)
-                .HasConstraintName("events_location_id_fkey");
+            // Конфигурация Location как вложенного объекта
+            entity.OwnsOne(e => e.Location, loc =>
+            {
+                loc.Property(l => l.Latitude)
+                   .HasPrecision(9, 6)
+                   .HasColumnName("latitude");
+                loc.Property(l => l.Longitude)
+                   .HasPrecision(9, 6)
+                   .HasColumnName("longitude");
+            });
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("images_pkey");
-
             entity.ToTable("images");
-
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
@@ -154,34 +147,14 @@ public partial class EventManagerDbContext : DbContext
                 .HasConstraintName("images_event_id_fkey");
         });
 
-        modelBuilder.Entity<Location>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("locations_pkey");
-
-            entity.ToTable("locations");
-
-            entity.HasIndex(e => new { e.Latitude, e.Longitude }, "uq_location_coordinates").IsUnique();
-
-            entity.Property(e => e.Id)
-                .UseIdentityAlwaysColumn()
-                .HasColumnName("id");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.Latitude)
-                .HasPrecision(9, 6)
-                .HasColumnName("latitude");
-            entity.Property(e => e.Longitude)
-                .HasPrecision(9, 6)
-                .HasColumnName("longitude");
-        });
+        // Убираем отдельную конфигурацию Locations
+        // modelBuilder.Entity<Location>(entity => { ... });
 
         modelBuilder.Entity<Request>(entity =>
         {
             entity.HasKey(e => e.RequestId).HasName("requests_pkey");
-
             entity.ToTable("requests");
-
             entity.HasIndex(e => new { e.RequesterId, e.EventId }, "uq_event_requestor").IsUnique();
-
             entity.Property(e => e.RequestId)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("request_id");
@@ -205,11 +178,8 @@ public partial class EventManagerDbContext : DbContext
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.RoleId).HasName("roles_pkey");
-
             entity.ToTable("roles");
-
             entity.HasIndex(e => e.RoleName, "roles_role_name_key").IsUnique();
-
             entity.Property(e => e.RoleId)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("role_id");
@@ -222,11 +192,8 @@ public partial class EventManagerDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.TelegramId).HasName("users_pkey");
-
             entity.ToTable("users");
-
             entity.HasIndex(e => e.Email, "users_email_key").IsUnique();
-
             entity.Property(e => e.TelegramId)
                 .ValueGeneratedNever()
                 .HasColumnName("telegram_id");

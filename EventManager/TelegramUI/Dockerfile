@@ -5,14 +5,11 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Копируем проекты
 COPY TelegramUI/TelegramUI.csproj TelegramUI/
 COPY UtilityHolder/UtilityHolder.csproj UtilityHolder/
 
-# Restore зависимостей
 RUN dotnet restore TelegramUI/TelegramUI.csproj
 
-# Копируем исходники
 COPY . .
 
 WORKDIR /src/TelegramUI
