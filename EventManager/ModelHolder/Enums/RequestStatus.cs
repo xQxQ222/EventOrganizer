@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelHolder.Dto
+namespace ModelHolder.Enums
 {
-    public partial class RequestDto
+    public enum RequestStatus
     {
-        public long EventId { get; }
+        PENDING,
+        REFUSED,
+        CANCELLED,
+        ACCEPTED
     }
 }

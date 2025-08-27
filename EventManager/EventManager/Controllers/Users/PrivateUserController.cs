@@ -22,14 +22,14 @@ namespace EventManager.Controllers.Users
         }
 
         [HttpPost]
-        public async Task<User> RegisterNewUser([FromHeader(Name = "X-User-Id")] long userId, UserDto userDto)
+        public async Task<User> RegisterNewUser([FromHeader(Name = "X-User-Id")] long userId, [FromBody] UserDto userDto)
         {
             log.LogInformation("POST api/users userId: {} с телом: {}", userId, userDto);
             return await userService.RegisterUser(userId, userDto);
         }
 
         [HttpPatch]
-        public async Task<User> UpdateUser([FromHeader(Name = "X-User-Id")] long userId, UserDto userDto)
+        public async Task<User> UpdateUser([FromHeader(Name = "X-User-Id")] long userId, [FromBody] UserDto userDto)
         {
             log.LogInformation("PATCH /api/users userId: {} с телом: {}", userId, userDto);
             return await userService.UpdateUser(userId, userDto);

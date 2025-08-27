@@ -117,7 +117,6 @@ public partial class EventManagerDbContext : DbContext
                 .HasForeignKey(d => d.InitiatorId)
                 .HasConstraintName("events_initiator_id_fkey");
 
-            // Конфигурация Location как вложенного объекта
             entity.OwnsOne(e => e.Location, loc =>
             {
                 loc.Property(l => l.Latitude)
@@ -146,8 +145,6 @@ public partial class EventManagerDbContext : DbContext
                 .HasConstraintName("images_event_id_fkey");
         });
 
-        // Убираем отдельную конфигурацию Locations
-        // modelBuilder.Entity<Location>(entity => { ... });
 
         modelBuilder.Entity<Request>(entity =>
         {
@@ -163,7 +160,7 @@ public partial class EventManagerDbContext : DbContext
                 .HasColumnName("created");
             entity.Property(e => e.EventId).HasColumnName("event_id");
             entity.Property(e => e.RequesterId).HasColumnName("requester_id");
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status).HasColumnName("status").HasConversion<string>();
 
             entity.HasOne(d => d.Event).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.EventId)

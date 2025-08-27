@@ -73,6 +73,10 @@ namespace EventManager.Service.EventService
             {
                 throw new NotFoundException($"Мероприятие с id {eventId} не найдено");
             }
+            if(eventFromDb.EventDate.AddHours(2) > newEventDate)
+            {
+                throw new PastEventException();
+            }
             if (newEventDate < DateTime.Today.AddDays(1))
             {
                 throw new IncorrectEventDate();

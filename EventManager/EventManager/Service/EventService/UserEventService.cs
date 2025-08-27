@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using EventManager.Utility;
+using Microsoft.EntityFrameworkCore;
 using ModelHolder.Context;
 using ModelHolder.Exceptions;
 using ModelHolder.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +35,7 @@ namespace EventManager.Service.EventService
                 throw new NotFoundException($"Категория с id {categoryId} не найдена");
             }
 
-            return dbContext.Events.Where(x => x.CategoryId == categoryId).ToList();
+            return dbContext.Events.Where(x => x.CategoryId == categoryId).Where(x=>x.EventDate >= DateTime.Today).ToList();
         }
 
         public async Task<Event> GetEventById(long userId, long eventId)
@@ -48,11 +50,30 @@ namespace EventManager.Service.EventService
             return eventFromDb;
         }
 
+        public async Task<List<Event>> GetEventsByDate(long userId, DateTime? from, DateTime? to)
+        {
+            helperMethods.VerifyUserExistence(userId);
+
+            IQueryable<Event> query = dbContext.Events;
+
+            if (from.HasValue)
+            {
+                query = query.Where(e => e.EventDate >= from.Value);
+            }
+
+            if (to.HasValue)
+            {
+                query = query.Where(e => e.EventDate <= to.Value);
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<List<Event>> GetMyEvents(long userId)
         {
             helperMethods.VerifyUserExistence(userId);
 
-            return dbContext.Events.Where(x=>x.InitiatorId == userId).ToList();
+            return dbContext.Events.Where(x=>x.InitiatorId == userId).Where(x => x.EventDate >= DateTime.Today).ToList();
         }
     }
 }

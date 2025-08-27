@@ -29,14 +29,14 @@ namespace EventManager.Controllers.Events
         }
 
         [HttpPost]
-        public async Task<Event> AddNewEvent([FromHeader(Name = "X-User-Id")] long userId, EventDto eventDto)
+        public async Task<Event> AddNewEvent([FromHeader(Name = "X-User-Id")] long userId, [FromBody] EventDto eventDto)
         {
             log.LogInformation("POST /api/admin/events с телом: {}", eventDto);
             return await eventService.PostNewEvent(userId, eventDto);
         }
 
-        [HttpDelete]
-        public async Task DeleteEventById([FromHeader(Name = "X-User-Id")] long userId, long eventId)
+        [HttpDelete("{eventId:long}")]
+        public async Task DeleteEventById([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long eventId)
         {
             log.LogInformation("DELETE /api/admin/events eventId: {}", eventId);
             await eventService.DeleteEventById(userId, eventId);

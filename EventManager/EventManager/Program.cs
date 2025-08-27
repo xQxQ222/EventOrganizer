@@ -1,6 +1,9 @@
 using EventManager.Mapper;
 using EventManager.Service.CategoryService;
+using EventManager.Service.CommentService;
+using EventManager.Service.EventService;
 using EventManager.Service.Images;
+using EventManager.Service.RequestService;
 using EventManager.Service.UserService;
 using EventManager.Utility;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +42,15 @@ builder.Services.AddScoped<IPrivateUserService, PrivateUserService>();
 
 builder.Services.AddScoped<IAdminImageService, AdminImagesService>();
 builder.Services.AddScoped<IUserImagesService, UserImagesService>();
+
+builder.Services.AddScoped<IAdminCommentService, AdminCommentService>();
+builder.Services.AddScoped<IUserCommentService, UserCommentService>();
+
+builder.Services.AddScoped<IAdminEventService, AdminEventService>();
+builder.Services.AddScoped<IUserEventService, UserEventService>();
+
+builder.Services.AddScoped<IAdminRequestService, AdminRequestService>();
+builder.Services.AddScoped<IUserRequestService, UserRequestService>();
 
 var app = builder.Build();
 

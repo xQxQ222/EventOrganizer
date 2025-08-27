@@ -23,7 +23,7 @@ namespace EventManager.Controllers.CategoryService
         }
 
         [HttpGet("{id:long}")]
-        public async Task<Category> GetCategoryById([FromHeader(Name = "X-User-Id")] long userId, long id)
+        public async Task<Category> GetCategoryById([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long id)
         {
             log.LogInformation("GET /api/categories/{}", id);
             return await userCategoryService.GetCategoryById(userId, id);

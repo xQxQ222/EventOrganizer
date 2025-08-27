@@ -1,4 +1,5 @@
 ﻿using ModelHolder.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,5 +12,7 @@ namespace EventManager.Service.EventService
         Task<List<Event>> GetMyEvents(long userId);
 
         Task<List<Event>> GetEventByCategory(long userId, short categoryId);
+
+        Task<List<Event>> GetEventsByDate(long userId, DateTime? from, DateTime? to);
     }
 }

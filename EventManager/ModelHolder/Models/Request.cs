@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ModelHolder.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace ModelHolder.Models;
@@ -11,7 +12,7 @@ public partial class Request
 
     public long EventId { get; set; }
 
-    public short Status { get; set; }
+    public RequestStatus Status { get; set; }
 
     public DateTime Created { get; set; }
 
