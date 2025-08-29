@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Refit;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -7,6 +8,12 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TelegramUI.Answers;
 using TelegramUI.Configuration;
+using TelegramUI.RefitClient.CategoryClient;
+using TelegramUI.RefitClient.Comments;
+using TelegramUI.RefitClient.Events;
+using TelegramUI.RefitClient.Images;
+using TelegramUI.RefitClient.Requests;
+using TelegramUI.RefitClient.Users;
 
 namespace TelegramUI;
 
@@ -20,7 +27,6 @@ class Program
             .AddHttpClient()
             .BuildServiceProvider();
 
-        // Получение IHttpClientFactory
         _httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
         messageAnswers = new MessageAnswers();
 
@@ -57,7 +63,7 @@ class Program
                 await messageAnswers.AnswerToMessage(botClient, update.Message);
                 break;
             case UpdateType.CallbackQuery:
-                
+                await messageAnswers.AnswerToCallbackQuery(botClient, update.CallbackQuery);
                 break;
         }
     }

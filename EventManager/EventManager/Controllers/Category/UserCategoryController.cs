@@ -22,11 +22,11 @@ namespace EventManager.Controllers.CategoryService
             this.userCategoryService = userCategoryService;
         }
 
-        [HttpGet("{id:long}")]
-        public async Task<Category> GetCategoryById([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long id)
+        [HttpGet("{categoryId:long}")]
+        public async Task<Category> GetCategoryById([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long categoryId)
         {
-            log.LogInformation("GET /api/categories/{}", id);
-            return await userCategoryService.GetCategoryById(userId, id);
+            log.LogInformation("GET /api/categories/{}", categoryId);
+            return await userCategoryService.GetCategoryById(userId, categoryId);
         }
 
         [HttpGet]

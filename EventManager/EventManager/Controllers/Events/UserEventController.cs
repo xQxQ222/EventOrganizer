@@ -49,7 +49,7 @@ namespace EventManager.Controllers.Events
             return await eventService.GetEventsByDate(userId, from, to);
         }
 
-        [HttpGet("/my/accepted")]
+        [HttpGet("/requests/accepted")]
         public async Task<List<Event>> GetMyAcceptedRequestEvents([FromHeader(Name = "X-User-Id")] long userId)
         {
             log.LogInformation("GET /api/events/my/accepted");

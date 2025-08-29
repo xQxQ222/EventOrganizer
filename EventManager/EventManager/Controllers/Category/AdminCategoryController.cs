@@ -34,8 +34,8 @@ namespace EventManager.Controllers.CategoryService
             return await adminCategoryService.UpdateCategory(userId, categoryId, categoryDto);
         }
 
-        [HttpDelete("{categoryId:int}")]
-        public async void DeleteCategory([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] int categoryId)
+        [HttpDelete("{categoryId:long}")]
+        public async Task DeleteCategory([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long categoryId)
         {
             log.LogInformation("DELETE /api/admin/categories. categoryId: {} ", categoryId);
             await adminCategoryService.DeleteCategory(userId, categoryId);

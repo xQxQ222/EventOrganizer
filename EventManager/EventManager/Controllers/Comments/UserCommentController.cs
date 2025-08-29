@@ -22,31 +22,31 @@ namespace EventManager.Controllers.Comments
         }
 
         [HttpGet("my")]
-        public Task<List<Comment>> GetMyComments([FromHeader(Name = "X-User-Id")] long userId)
+        public async Task<List<Comment>> GetMyComments([FromHeader(Name = "X-User-Id")] long userId)
         {
             log.LogInformation("GET /api/comments/my");
-            return commentService.GetMyComments(userId);
+            return await commentService.GetMyComments(userId);
         }
 
         [HttpPost]
-        public Task<Comment> PostNewComment([FromHeader(Name = "X-User-Id")] long userId, [FromBody] CommentDto commentDto)
+        public async Task<Comment> PostNewComment([FromHeader(Name = "X-User-Id")] long userId, [FromBody] CommentDto commentDto)
         {
             log.LogInformation("POST /api/comments");
-            return commentService.PostNewComment(userId, commentDto);
+            return await commentService.PostNewComment(userId, commentDto);
         }
 
         [HttpPatch("my/{commentId:long}")]
-        public Task<Comment> UpdateMyComment([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long commentId, [FromBody] CommentUpdateDto commentDto)
+        public async Task<Comment> UpdateMyComment([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long commentId, [FromBody] CommentUpdateDto commentDto)
         {
             log.LogInformation("PATCH /api/comments/my/{}", commentId);
-            return commentService.UpdateMyComment(userId, commentId, commentDto);
+            return await commentService.UpdateMyComment(userId, commentId, commentDto);
         }
 
         [HttpGet("event/{eventId:long}")]
-        public Task<List<Comment>> GetEventComments([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long eventId)
+        public async Task<List<Comment>> GetEventComments([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long eventId)
         {
             log.LogInformation("GET /api/comments/event/{}", eventId);
-            return commentService.GetEventComments(userId, eventId);
+            return await commentService.GetEventComments(userId, eventId);
         }
 
     }
