@@ -2,6 +2,7 @@
 using EventManager.Utility;
 using Microsoft.EntityFrameworkCore;
 using ModelHolder.Context;
+using ModelHolder.Enums;
 using ModelHolder.Exceptions;
 using ModelHolder.Models;
 using System;
@@ -35,7 +36,7 @@ namespace EventManager.Service.EventService
                 throw new NotFoundException($"Категория с id {categoryId} не найдена");
             }
 
-            return dbContext.Events.Where(x => x.CategoryId == categoryId).Where(x=>x.EventDate >= DateTime.Today).ToList();
+            return dbContext.Events.Where(x => x.CategoryId == categoryId).Where(x=>x.EventDate >= DateTime.UtcNow).ToList();
         }
 
         public async Task<Event> GetEventById(long userId, long eventId)
@@ -73,7 +74,16 @@ namespace EventManager.Service.EventService
         {
             helperMethods.VerifyUserExistence(userId);
 
-            return dbContext.Events.Where(x=>x.InitiatorId == userId).Where(x => x.EventDate >= DateTime.Today).ToList();
+            return dbContext.Events.Where(x=>x.InitiatorId == userId).Where(x => x.EventDate >= DateTime.UtcNow).ToList();
+        }
+
+        public async Task<List<Event>> GetMyAcceptedRequestEvents(long userId)
+        {
+            helperMethods.VerifyUserExistence(userId);
+
+            var ids = dbContext.Requests.Where(x=>x.Status.Equals(RequestStatus.ACCEPTED)).Select(x=>x.EventId).ToList();
+
+            return dbContext.Events.Where(x=>x.EventDate >= DateTime.UtcNow).Where(x=>ids.Contains(x.Id)).ToList();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EventManager.Utility;
+using Microsoft.EntityFrameworkCore;
 using ModelHolder.Context;
 using ModelHolder.Dto;
 using ModelHolder.Exceptions;
@@ -34,7 +35,7 @@ namespace EventManager.Service.CategoryService
         {
             helperMethods.VerifyUserExistence(userId);
             helperMethods.CheckAdminRights(userId);
-            var category = await dbContext.Categories.FindAsync(categoryId);
+            var category = dbContext.Categories.Find(categoryId);
             if (category == null)
             {
                 throw new NotFoundException($"Категория с id {categoryId} не найдена");

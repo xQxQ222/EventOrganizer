@@ -35,7 +35,7 @@ namespace EventManager.Controllers.Users
             return await userService.UpdateUser(userId, userDto);
         }
 
-        [HttpGet]
+        [HttpGet("profile")]
         public async Task<User> GetProfile([FromHeader(Name = "X-User-Id")] long userId)
         {
             log.LogInformation("GET /api/users userId: {}", userId);

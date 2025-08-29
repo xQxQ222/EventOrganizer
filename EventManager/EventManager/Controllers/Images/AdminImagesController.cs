@@ -14,6 +14,12 @@ namespace EventManager.Controllers.Images
         private readonly IAdminImageService imageService;
         private readonly ILogger<AdminImagesController> log;
 
+        public AdminImagesController(IAdminImageService imageService, ILogger<AdminImagesController> log)
+        {
+            this.imageService = imageService;
+            this.log = log;
+        }
+
         [HttpPost("event/{eventId:long}")]
         public async Task<List<Image>> PostImages([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long eventId, [FromBody] List<string> imagesPath)
         {

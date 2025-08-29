@@ -82,7 +82,7 @@ namespace EventManager.Service.RequestService
         {
             helperMethods.VerifyUserExistence(userId);
 
-            return dbContext.Requests.Where(x=>x.RequesterId == userId).Where(x=>x.Status.Equals(RequestStatus.PENDING)).ToList();
+            return dbContext.Requests.Where(x=>x.RequesterId == userId).ToList();
         }
     }
 }

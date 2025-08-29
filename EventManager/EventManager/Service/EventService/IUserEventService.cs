@@ -14,5 +14,7 @@ namespace EventManager.Service.EventService
         Task<List<Event>> GetEventByCategory(long userId, long categoryId);
 
         Task<List<Event>> GetEventsByDate(long userId, DateTime? from, DateTime? to);
+
+        Task<List<Event>> GetMyAcceptedRequestEvents(long userId);
     }
 }
