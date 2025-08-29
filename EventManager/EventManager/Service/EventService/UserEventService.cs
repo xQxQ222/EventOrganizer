@@ -25,7 +25,7 @@ namespace EventManager.Service.EventService
             this.helperMethods = helperMethods;
         }
 
-        public async Task<List<Event>> GetEventByCategory(long userId, short categoryId)
+        public async Task<List<Event>> GetEventByCategory(long userId, long categoryId)
         {
             helperMethods.VerifyUserExistence(userId);
 

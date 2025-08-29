@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModelHolder.Dto
 {
+    [AutoConstructor]
     public partial class RequestDto
     {
         public long EventId { get; }

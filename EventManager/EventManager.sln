@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramUI", "TelegramUI\TelegramUI.csproj", "{C2E1A80A-15FD-4514-BFAB-73F1159A473D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailNotificator", "EmailNotificator\EmailNotificator.csproj", "{C99B313A-481D-45FD-9DE6-B480A3D46E1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{C2E1A80A-15FD-4514-BFAB-73F1159A473D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2E1A80A-15FD-4514-BFAB-73F1159A473D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2E1A80A-15FD-4514-BFAB-73F1159A473D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C99B313A-481D-45FD-9DE6-B480A3D46E1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C99B313A-481D-45FD-9DE6-B480A3D46E1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C99B313A-481D-45FD-9DE6-B480A3D46E1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C99B313A-481D-45FD-9DE6-B480A3D46E1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

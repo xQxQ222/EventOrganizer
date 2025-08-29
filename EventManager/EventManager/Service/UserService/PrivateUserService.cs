@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EventManager.Kafka;
 using EventManager.Utility;
 using Microsoft.EntityFrameworkCore;
 using ModelHolder.Context;
@@ -27,14 +28,13 @@ namespace EventManager.Service.UserService
         public async Task<User> GetProfile(long userId)
         {
             helperMethods.VerifyUserExistence(userId);
-            var user = await dbContext.Users.FirstOrDefaultAsync(x=>x.TelegramId == userId);
+            var user = await dbContext.Users.FirstOrDefaultAsync(x => x.TelegramId == userId);
             helperMethods.VerifyUserExistence(userId);
             return user;
         }
 
         public async Task<User> RegisterUser(long userId, UserDto userDto)
         {
-            helperMethods.VerifyUserExistence(userId);
             if (dbContext.Users.FirstOrDefault(x => x.TelegramId == userId) != null)
             {
                 throw new AlreadyRegisteredException($"Пользователь с id {userId} уже зарегистрирован");
@@ -53,7 +53,7 @@ namespace EventManager.Service.UserService
         public async Task<User> UpdateUser(long userId, UserDto userDto)
         {
             helperMethods.VerifyUserExistence(userId);
-            var user = dbContext.Users.FirstOrDefault(x=>x.TelegramId == userId);
+            var user = dbContext.Users.FirstOrDefault(x => x.TelegramId == userId);
             if (userDto.Email != null)
             {
                 user.Email = userDto.Email;

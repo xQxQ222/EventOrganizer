@@ -16,10 +16,8 @@ namespace EventManager.Mapper
             CreateMap<ImageDto, Image>();
             CreateMap<Comment, CommentDto>();
             CreateMap<CommentDto, Comment>();
-            CreateMap<Request, RequestDto>();
-            CreateMap<RequestDto, RequestDto>();
-            CreateMap<Event, EventDto>();
-            CreateMap<EventDto, EventDto>();
+            CreateMap<Request, RequestDto>().ReverseMap();
+            CreateMap<Event, EventDto>().ReverseMap();
             CreateMap<Role, RoleDto>();
             CreateMap<RoleDto, Role>();
         }

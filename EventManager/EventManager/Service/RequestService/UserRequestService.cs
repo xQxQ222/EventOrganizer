@@ -31,7 +31,7 @@ namespace EventManager.Service.RequestService
             helperMethods.VerifyUserExistence(userId);
 
             var requestEvent = await dbContext.Events.FindAsync(requestDto.EventId);
-            if (requestEvent != null)
+            if (requestEvent == null)
             {
                 throw new NotFoundException($"Мероприятия с id {requestDto.EventId} не найдено");
             }

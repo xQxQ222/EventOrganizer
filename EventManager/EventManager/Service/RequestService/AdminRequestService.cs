@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EventManager.Kafka;
 using EventManager.Utility;
 using ModelHolder.Context;
 using ModelHolder.Dto;
@@ -6,6 +7,7 @@ using ModelHolder.Enums;
 using ModelHolder.Exceptions;
 using ModelHolder.Models;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,12 +19,14 @@ namespace EventManager.Service.RequestService
         private readonly EventManagerDbContext dbContext;
         private readonly IMapper mapper;
         private readonly HelperMethods helperMethods;
+        private readonly EventManagerProducer producer;
 
-        public AdminRequestService(EventManagerDbContext dbContext, IMapper mapper, HelperMethods helperMethods)
+        public AdminRequestService(EventManagerDbContext dbContext, IMapper mapper, HelperMethods helperMethods, EventManagerProducer producer)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.helperMethods = helperMethods;
+            this.producer = producer;
         }
 
         public async Task<List<Request>> GetEventPendingRequests(long userId, long eventId)
@@ -30,7 +34,7 @@ namespace EventManager.Service.RequestService
             helperMethods.VerifyUserExistence(userId);
             helperMethods.CheckAdminRights(userId);
 
-            return dbContext.Requests.Where(x=>x.EventId == eventId).Where(x=>x.Status.Equals(RequestStatus.PENDING)).ToList();
+            return dbContext.Requests.Where(x => x.EventId == eventId).Where(x => x.Status.Equals(RequestStatus.PENDING)).ToList();
         }
 
         public async Task<Request> GetRequestById(long userId, long requestId)
@@ -38,7 +42,7 @@ namespace EventManager.Service.RequestService
             helperMethods.VerifyUserExistence(userId);
             helperMethods.CheckAdminRights(userId);
 
-            var request = dbContext.Requests.FirstOrDefault(x=>x.RequestId == requestId);
+            var request = dbContext.Requests.FirstOrDefault(x => x.RequestId == requestId);
             if (request == null)
             {
                 throw new NotFoundException($"Заявки с id {requestId} не найдено");
@@ -75,13 +79,40 @@ namespace EventManager.Service.RequestService
             if (verify)
             {
                 request.Status = RequestStatus.ACCEPTED;
+                await CheckUserAndSendEmail(requestId, true);
             }
             else
             {
                 request.Status = RequestStatus.REFUSED;
+                await CheckUserAndSendEmail(requestId, false);
             }
             await dbContext.SaveChangesAsync();
             return verify;
+        }
+
+        private async Task CheckUserAndSendEmail(long requestId, bool accept)
+        {
+            var request = await dbContext.Requests.FindAsync(requestId);
+            if (request != null)
+            {
+                var user = await dbContext.Users.FindAsync(request.RequesterId);
+                if (user != null)
+                {
+                    var email = user.Email;
+                    var requestEvent = await dbContext.Events.FindAsync(request.EventId);
+                    if (!string.IsNullOrEmpty(email) && requestEvent != null)
+                    {
+                        if (accept)
+                        {
+                            await producer.SendBookingSuccessAsync(email, requestId.ToString(), requestEvent.Title);
+                        }
+                        else
+                        {
+                            await producer.SendBookingDeclineAsync(email, requestId.ToString(), requestEvent.Title);
+                        }
+                    }
+                }
+            }
         }
     }
 }

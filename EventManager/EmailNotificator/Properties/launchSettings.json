@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "EmailNotificator": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Email": "eventnotificator18@gmail.com",
+        "EmailPassword": "qfzx sckv jlbz huil"
+      }
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -20,6 +20,7 @@ namespace TelegramUI.Answers
                 new[]
                 {
                     new KeyboardButton("Меню"),
+                    new KeyboardButton("Профиль")
                 },
                 new[]
                 {

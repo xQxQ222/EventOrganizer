@@ -28,11 +28,11 @@ namespace EventManager.Controllers.Events
             return await eventService.GetEventById(userId, eventId);
         }
 
-        [HttpGet("category/{categoryId:int}")]
-        public async Task<List<Event>> GetEventsByCategory([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] int categoryId)
+        [HttpGet("category/{categoryId:long}")]
+        public async Task<List<Event>> GetEventsByCategory([FromHeader(Name = "X-User-Id")] long userId, [FromRoute] long categoryId)
         {
             log.LogInformation("GET /api/events/category/{}", categoryId);
-            return await eventService.GetEventByCategory(userId, (short)categoryId);
+            return await eventService.GetEventByCategory(userId, categoryId);
         }
 
         [HttpGet("my")]

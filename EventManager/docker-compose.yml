@@ -1,44 +1,54 @@
 services:
-  db:
-      image: postgres:16
-      container_name: eventmanagerdb
-      restart: always
-      environment:
-        POSTGRES_DB: event-manager-db
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      ports:
-        - "6432:5432"
-      volumes:
-        - db-data:/var/lib/postgresql/data
-        - ./EventManager/init-sql:/docker-entrypoint-initdb.d
+      db:
+          image: postgres:16
+          container_name: eventmanagerdb
+          restart: always
+          environment:
+                POSTGRES_DB: event-manager-db
+                POSTGRES_USER: postgres
+                POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+          ports:
+            - "6432:5432"
+          volumes:
+            - db-data:/var/lib/postgresql/data
+            - ./EventManager/init-sql:/docker-entrypoint-initdb.d
 
-  api:
-    build:
-      context: .
-      dockerfile: EventManager/Dockerfile
-    container_name: event-manager-api
-    restart: always
-    depends_on:
-      - db
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Production"
-      DB_CONNECTION: ${DBCONNECTION}
-    ports:
-      - "5000:8080"
+      
 
-  telegram-ui:
-    build:
-      context: .
-      dockerfile: TelegramUI/Dockerfile
-    environment:
-        - StorageTgBotSets__TELEGRAM_TOKEN=${StorageTgBotSets__TELEGRAM_TOKEN}
-    container_name: telegram-ui
-    restart: always
-    depends_on:
-      - api
-    ports:
-      - "3000:80"
+      kafka:
+            image: confluentinc/confluent-local:7.4.3
+            hostname: kafka
+            container_name: kafka
+            ports:
+              - "9092:9092"
+            restart: unless-stopped
+            environment:
+                  KAFKA_NODE_ID: 1
+                  KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+                  KAFKA_JMX_PORT: 9101
+                  KAFKA_JMX_HOSTNAME: localhost
+                  KAFKA_PROCESS_ROLES: 'broker,controller'
+                  KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+                  KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+                  CLUSTER_ID: 'K0EA9p0yEe6MkAAAAkKsEg'
+
+      kafka-init-topics:
+            image: confluentinc/confluent-local:7.4.3
+            container_name: kafka-init-topics
+            depends_on:
+              - kafka
+            command: "bash -c \
+                        'kafka-topics --create --topic event.manager.requests.decline \
+                                     --partitions 1 --replication-factor 1 --if-not-exists \
+                                     --bootstrap-server kafka:29092 && \
+                        kafka-topics --create --topic event.manager.requests.accept \
+                                     --partitions 1 --replication-factor 1 --if-not-exists \
+                                     --bootstrap-server kafka:29092'"
+            init: true
+  
+      
+    
+
 
 volumes:
   db-data:

@@ -58,7 +58,7 @@ public partial class EventManagerDbContext : DbContext
             entity.Property(e => e.AuthorId).HasColumnName("author_id");
             entity.Property(e => e.Created)
                 .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamptz")
                 .HasColumnName("created");
             entity.Property(e => e.Description)
                 .HasMaxLength(700)
@@ -92,11 +92,11 @@ public partial class EventManagerDbContext : DbContext
             entity.Property(e => e.CategoryId).HasColumnName("category_id");
             entity.Property(e => e.CreatedOn)
                 .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamptz")
                 .HasColumnName("created_on");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.EventDate)
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamptz")
                 .HasColumnName("event_date");
             entity.Property(e => e.InitiatorId).HasColumnName("initiator_id");
             entity.Property(e => e.IsPaid)
@@ -156,7 +156,7 @@ public partial class EventManagerDbContext : DbContext
                 .HasColumnName("request_id");
             entity.Property(e => e.Created)
                 .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
+                .HasColumnType("timestamptz")
                 .HasColumnName("created");
             entity.Property(e => e.EventId).HasColumnName("event_id");
             entity.Property(e => e.RequesterId).HasColumnName("requester_id");
