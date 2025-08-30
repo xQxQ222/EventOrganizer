@@ -25,6 +25,16 @@ namespace EventManager.Service.UserService
             this.helperMethods = helperMethods;
         }
 
+        public async Task<bool> CheckUserExistence(long userId)
+        {
+            var user = dbContext.Users.SingleOrDefault(x => x.TelegramId == userId);
+            if (user == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<User> GetProfile(long userId)
         {
             helperMethods.VerifyUserExistence(userId);

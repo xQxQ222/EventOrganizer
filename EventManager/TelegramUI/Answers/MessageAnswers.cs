@@ -1,20 +1,13 @@
-﻿using Refit;
-using System;
+﻿using EventManager.Service.Parsers;
+using ModelHolder.Dto;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramUI.Enums;
 using TelegramUI.Keyboards;
-using TelegramUI.RefitClient.CategoryClient;
-using TelegramUI.RefitClient.Comments;
-using TelegramUI.RefitClient.Events;
-using TelegramUI.RefitClient.Images;
-using TelegramUI.RefitClient.Requests;
-using TelegramUI.RefitClient.Users;
+using TelegramUI.RefitClient.Clients;
 
 namespace TelegramUI.Answers
 {
@@ -22,18 +15,14 @@ namespace TelegramUI.Answers
     {
         private readonly ReplyKeyboards replyKeyboards;
         private readonly InlineKeyboards inlineKeyboards;
-        public Dictionary<string, Func<ITelegramBotClient, Message, Task>> BotMessageAnswers { get; set; }
-        public Dictionary<string, Func<ITelegramBotClient, CallbackQuery, Task>> BotQueryAnswers { get; set; }
+        private readonly Dictionary<string, Func<ITelegramBotClient, Message, Task>> BotMessageAnswers;
+        private readonly Dictionary<string, Func<ITelegramBotClient, CallbackQuery, Task>> BotQueryAnswers;
+        
+        private ConcurrentDictionary<long, UserAction> currentAction = new();
+        private ConcurrentDictionary<long, UserState> userReg = new();
+        private ConcurrentDictionary<long, ReplyKeyboardMarkup> userMainKeyboards = new();
 
-        private ConcurrentDictionary<long, List<Message>> userMessages = new();
-        private const string apiUri = "https://localhost:5001";
-
-        private readonly IUserApi userApi;
-        private readonly ICategoryApi categoryApi;
-        private readonly ICommentsApi commentApi;
-        private readonly IEventApi eventApi;
-        private readonly IImagesApi imagesApi;
-        private readonly IRequestApi requestsApi;
+        private RefitClientStorage refitClientStorage;
 
         private readonly ConcurrentDictionary<long, string> userEmails = new();
         public MessageAnswers()
@@ -41,22 +30,19 @@ namespace TelegramUI.Answers
             replyKeyboards = new ReplyKeyboards();
             inlineKeyboards = new InlineKeyboards();
 
-            userApi = RestService.For<IUserApi>(apiUri);
-            categoryApi = RestService.For<ICategoryApi>(apiUri);
-            commentApi = RestService.For<ICommentsApi>(apiUri);
-            eventApi = RestService.For<IEventApi>(apiUri);
-            imagesApi = RestService.For<IImagesApi>(apiUri);
-            requestsApi = RestService.For<IRequestApi>(apiUri);
+            refitClientStorage = new RefitClientStorage();
 
             BotMessageAnswers = new Dictionary<string, Func<ITelegramBotClient, Message, Task>>()
             {
-                {"/start",AnswerToStart }
+                {"/start",AnswerToStart },
+                {"Профиль", AnswerToProfile},
+                {"/createEvent",  PrepareToCreateEvent}
             };
 
             BotQueryAnswers = new Dictionary<string, Func<ITelegramBotClient, CallbackQuery, Task>>()
             {
-                {"/registration", AnswerToRegistrate },
-                {"/register_with_email", AnswerToRegistrateWithEmail }
+                {"/registration", AnswerToRegistrate }
+                
             };
         }
 
@@ -64,7 +50,6 @@ namespace TelegramUI.Answers
         {
             var me = client.GetMe();
             var myName = me.Result.FirstName;
-
             Console.WriteLine($"Пользователь {query.From} написал: {query.Data}");
             switch (BotQueryAnswers.ContainsKey(query.Data))
             {
@@ -82,34 +67,96 @@ namespace TelegramUI.Answers
         {
             var me = client.GetMe();
             var myName = me.Result.FirstName;
-
-            Console.WriteLine($"Пользователь {message.Chat.Username} написал: {message.Text}");
-            switch (BotMessageAnswers.ContainsKey(message.Text))
+            if (!userReg.ContainsKey(message.From.Id))
             {
-                case true:
-                    var func = BotMessageAnswers[message.Text];
-                    await func(client, message);
-                    break;
-                case false:
-                    await client.SendMessage(message.Chat.Id, $"Я не знаю такую команду: {message.Text}", replyMarkup: replyKeyboards.MainKeyBoard);
-                    break;
+                userReg[message.From.Id] = UserState.None;
+            }
+            Console.WriteLine($"Пользователь {message.Chat.Username} написал: {message.Text}.");
+            try
+            {
+                if (userReg[message.From.Id] == UserState.None)
+                {
+                    await client.SendMessage(message.Chat.Id, $"Пройдите регистрацию, чтобы пользоваться ботом", replyMarkup: inlineKeyboards.StartKeyboard);
+                    return;
+                }
+                else if (userReg[message.From.Id] == UserState.AwaitingEmail)
+                {
+                    UserDto userDto = new UserDto(message.Text);
+                    var user = await refitClientStorage.userApi.RegisterNewUser(message.From.Id, userDto);
+                    userMainKeyboards[user.TelegramId] = replyKeyboards.GetMainKeyboard(user.RoleId);
+                    await client.SendMessage(message.Chat.Id, $"Успешная регистрация ✓", replyMarkup: userMainKeyboards[message.From.Id]);
+                    userReg[message.From.Id] = UserState.Registered;
+                    return;
+                }
+                else
+                {
+                    if (!currentAction.ContainsKey(message.From.Id))
+                    {
+                        currentAction[message.From.Id] = UserAction.None;
+                    }
+                    if (currentAction[message.From.Id] == UserAction.Adding_Event)
+                    {
+                        var eventDto = ParsersStorage.ParseEvent(message.Text);
+                        await refitClientStorage.eventApi.AddNewEvent(message.From.Id, eventDto);
+                    }
+                    switch (BotMessageAnswers.ContainsKey(message.Text))
+                    {
+                        case true:
+                            var func = BotMessageAnswers[message.Text];
+                            await func(client, message);
+                            break;
+                        case false:
+                            await client.SendMessage(message.Chat.Id, $"Я не знаю такую команду: {message.Text}", replyMarkup: userMainKeyboards[message.From.Id]);
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await client.SendMessage(message.Chat.Id, ex.Message);
             }
         }
 
         public async Task AnswerToStart(ITelegramBotClient botClient, Message message)
         {
             await botClient.SendMessage(message.Chat.Id, $"Добро пожаловать в телеграмм-бот для управления и организации мероприятий!");
-            await botClient.SendMessage(message.Chat.Id, $"Вы уже зарегистрированы?", replyMarkup: inlineKeyboards.StartKeyboard);
         }
 
         public async Task AnswerToRegistrate(ITelegramBotClient botClient, CallbackQuery query)
         {
-            await botClient.SendMessage(query.Message.Chat.Id, $"Приветствую! Как будем регистрироваться?", replyMarkup: replyKeyboards.RegistrateKeyboard);
+            await botClient.SendMessage(query.Message.Chat.Id, $"Приветствую! Введите свой email для регистрации");
+            userReg[query.From.Id] = UserState.AwaitingEmail;
         }
 
-        public async Task AnswerToRegistrateWithEmail(ITelegramBotClient botClient, CallbackQuery query)
+        public async Task AnswerToProfile(ITelegramBotClient botClient, Message message)
         {
-            await botClient.SendMessage(query.Message.Chat.Id, $"Отлично! Введите свой email");
+            var user = await refitClientStorage.userApi.GetProfile(message.From.Id);
+            await botClient.SendMessage(message.Chat.Id, $"Ваша почта: {user.Email}, Id роли: {user.RoleId}", replyMarkup: replyKeyboards.ProfileKeyboard);
+        }
+
+        public async Task PrepareToCreateEvent(ITelegramBotClient botClient, Message message)
+        {
+            var categories = await refitClientStorage.categoryApi.GetAllCategories(message.From.Id);
+            string preparing = """
+                Введите информацию о мероприятии в формате:
+                Название: xxxxxx
+                Описание: xxxxxx
+                Локация: Широта Долгота
+                Дата: dd.MM.YYYY hh:mm
+                Платно: да
+                Лимит: 100
+                Категория: id категории
+                
+                """;
+            await botClient.SendMessage(message.Chat.Id, preparing);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Список доступных категорий (id - name)");
+            foreach (var category in categories)
+            {
+                stringBuilder.AppendLine($"{category.CategoryId} - {category.CategoryName}");
+            }
+            await botClient.SendMessage(message.Chat.Id, stringBuilder.ToString());
+            currentAction[message.From.Id] = UserAction.Adding_Event;
         }
     }
 }

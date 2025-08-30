@@ -25,5 +25,8 @@ namespace TelegramUI.RefitClient.Users
 
         [Get("/api/users/profile")]
         Task<User> GetProfile([Header("X-User-Id")] long userId);
+
+        [Get("/api/users/existence")]
+        Task<bool> CheckUserExistence([Header("X-User-Id")] long userId);
     }
 }

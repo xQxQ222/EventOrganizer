@@ -11,12 +11,9 @@ namespace TelegramUI.Keyboards
     {
         public ReplyKeyboardMarkup MainKeyBoard { get; private set; }
 
-        public ReplyKeyboardMarkup AdminPanelKeyboard { get; private set; }
+        public ReplyKeyboardMarkup AdminMainKeyboard { get; private set; }
 
-        public ReplyKeyboardMarkup RegistrateKeyboard { get; private set; }
-
-        public ReplyKeyboardMarkup StartKeyboard { get; private set; }
-
+        public ReplyKeyboardMarkup ProfileKeyboard {  get; private set; }   
 
 
         public ReplyKeyboards()
@@ -27,34 +24,53 @@ namespace TelegramUI.Keyboards
                 {
                     new KeyboardButton("Меню"),
                     new KeyboardButton("Профиль")
-                },
-                new[]
-                {
-                    new KeyboardButton("Контакты"),
-                    new KeyboardButton("Описание")
                 }
             })
             {
                 ResizeKeyboard = true
             };
 
-            RegistrateKeyboard = new ReplyKeyboardMarkup(new[]
+            AdminMainKeyboard = new ReplyKeyboardMarkup(new[]
             {
-                new KeyboardButton[] { "Без почты", "С почтой" }
-            })
+                new[]
                 {
-                    ResizeKeyboard = true,
-                    OneTimeKeyboard = true
-                };
-
-            StartKeyboard = new ReplyKeyboardMarkup(new[]
-            {
-                new KeyboardButton[] {"Да", "Нет"}
+                    new KeyboardButton("Меню"),
+                    new KeyboardButton("Профиль")
+                },
+                new[]
+                {
+                    new KeyboardButton("Контакты"),
+                    new KeyboardButton("Описание")
+                },
+                new[] 
+                {
+                    new KeyboardButton("Панель администратора")
+                }
             })
             {
                 ResizeKeyboard = true,
-                OneTimeKeyboard = true
             };
+
+            ProfileKeyboard = new ReplyKeyboardMarkup(new[]
+            {
+                new[]
+                {
+                    new KeyboardButton("Сменить email"),
+                    new KeyboardButton("Вернуться в главное меню")
+                }
+            })
+            {
+                ResizeKeyboard = true
+            };
+        }
+
+        public ReplyKeyboardMarkup GetMainKeyboard(int userRoleId)
+        {
+            if(userRoleId == 1)
+            {
+                return AdminMainKeyboard;
+            }
+            return MainKeyBoard;
         }
     }
 }

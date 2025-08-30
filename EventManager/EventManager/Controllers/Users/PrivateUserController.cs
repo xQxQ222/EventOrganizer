@@ -41,5 +41,11 @@ namespace EventManager.Controllers.Users
             log.LogInformation("GET /api/users userId: {}", userId);
             return await userService.GetProfile(userId);
         }
+
+        [HttpGet("existence")]
+        public async Task<bool> CheckUserExistence([FromHeader(Name = "X-User-Id")] long userId)
+        {
+            return await userService.CheckUserExistence(userId);
+        }
     }
 }

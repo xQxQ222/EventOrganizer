@@ -12,5 +12,7 @@ namespace EventManager.Service.UserService
         Task<User> UpdateUser(long userId, UserDto userDto);
 
         Task<User> GetProfile(long userId);
+
+        Task<bool> CheckUserExistence(long userId);
     }
 }

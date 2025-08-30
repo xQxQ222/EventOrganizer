@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 namespace ModelHolder.Models;
 
+[AutoConstructor]
 public partial class Location
 {
 
-    public decimal Latitude { get; set; }
+    public decimal Latitude { get; }
 
-    public decimal Longitude { get; set; }
+    public decimal Longitude { get;}
 }
